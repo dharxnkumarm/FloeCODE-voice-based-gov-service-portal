@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application Status Tracker - FlowCODE | Citizen e-Services</title>
+  <meta name="description" content="Check mock government application status for certificates and citizen services with step-by-step explanation.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Institutional Bar -->
+  <aside class="institution-strip" aria-label="Portal Header Information">
+    <div class="container">
+      <div class="institution-name" data-i18n="institution">Voice-Based Government Service Initiative</div>
+      <div>
+        <span class="academic-badge" data-i18n="department">Public Digital Services &amp; e-Governance</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Site Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand-block">
+        <a href="index.html" class="brand-title">
+          FlowCODE <span class="brand-badge" aria-hidden="true">&#9679;</span>
+        </a>
+        <span class="brand-subtitle" data-i18n="portalSubtitle">Voice-based government service portal</span>
+      </div>
+
+      <nav class="main-nav" aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li><a href="index.html" data-i18n="navHome">Home</a></li>
+          <li><a href="services.html" data-i18n="navServices">Services</a></li>
+          <li><a href="application-status.html" class="active" data-i18n="navStatus">Application Status</a></li>
+          <li><a href="contact.html" data-i18n="navContact">Contact</a></li>
+          <li id="navAuthItem">
+            <a href="login.html" id="navLoginLink" class="nav-login-btn" data-i18n="navLogin">Login</a>
+          </li>
+        </ul>
+
+        <!-- Language Selector -->
+        <div class="lang-toggle-wrapper" role="group" aria-label="Language Selector">
+          <button type="button" id="langEnBtn" class="lang-btn active" onclick="setLanguage('en')">EN</button>
+          <button type="button" id="langTaBtn" class="lang-btn" onclick="setLanguage('ta')">தமிழ்</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <section class="services-page-header">
+      <div class="container">
+        <span class="hero-tag">&#9678; Citizen Status Tracker</span>
+        <h1 class="hero-title" style="margin-top: 8px;" data-i18n="statusSectionTitle">Check Application Status (Demo)</h1>
+        <p class="hero-subtitle" data-i18n="statusSectionSubtitle">
+          Enter your application reference number to check the mock status of your request.
+        </p>
+      </div>
+    </section>
+
+    <!-- Tracker Card Section -->
+    <section style="padding: 36px 0;">
+      <div class="container">
+        <div class="status-form-card">
+          <form onsubmit="checkApplicationStatus(event)">
+            <div class="status-form-group">
+              <label for="appNumberInput" class="status-label-text" data-i18n="statusInputLabel">Application Number:</label>
+              <input type="text" id="appNumberInput" class="status-input" placeholder="e.g., APP1001, APP1002, APP1003" data-i18n-placeholder="statusInputPlaceholder" required>
+              
+              <div class="quick-demo-tokens">
+                <span style="font-size: 13px; font-weight: 600; color: var(--color-deep-navy);">Quick Demo Sample Numbers:</span>
+                <button type="button" class="demo-token-btn" onclick="fillDemoAppNumber('APP1001')">APP1001 (Income Certificate - Under Verification)</button>
+                <button type="button" class="demo-token-btn" onclick="fillDemoAppNumber('APP1002')">APP1002 (Birth Certificate - Approved)</button>
+                <button type="button" class="demo-token-btn" onclick="fillDemoAppNumber('APP1003')">APP1003 (Community Certificate - Action Required)</button>
+              </div>
+            </div>
+
+            <div class="status-form-group">
+              <label for="serviceTypeSelect" class="status-label-text" data-i18n="statusSelectLabel">Service Type:</label>
+              <select id="serviceTypeSelect" class="status-select">
+                <option value="all">All Services (Auto-detect)</option>
+                <option value="income">Income Certificate</option>
+                <option value="birth">Birth Certificate</option>
+                <option value="caste">Community Certificate</option>
+                <option value="ration">Ration Card</option>
+                <option value="pension">Old Age Pension</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn-primary" style="width: 100%;" data-i18n="btnCheckStatus">Check Status</button>
+          </form>
+
+          <!-- Result Area -->
+          <div id="statusResultArea" class="status-result-container" role="region" aria-live="polite"></div>
+
+          <p class="status-notice" data-i18n="statusNotice">
+            Note: This is sample data created for academic demonstration. The website is not connected to a live government database.
+          </p>
+        </div>
+
+        <!-- Educational Guide for Village Users -->
+        <div style="max-width: 680px; margin: 32px auto 0 auto; background: #FFFFFF; border: 1px solid var(--color-border); border-radius: var(--border-radius-lg); padding: 24px;">
+          <h3 style="font-size: 18px; color: var(--color-deep-navy); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+            <span style="color: var(--color-teal);">&#9432;</span>
+            How Does Government Application Tracking Work?
+          </h3>
+          <p style="font-size: 14px; color: var(--color-text-main); margin-bottom: 12px; line-height: 1.6;">
+            Whenever you submit an application at a government e-Seva centre, Village Panchayat, or state portal, you receive an <strong>Acknowledgement Receipt</strong> containing an Application Reference Number (ARN or EID).
+          </p>
+          <ul style="font-size: 14px; color: var(--color-text-main); padding-left: 20px; line-height: 1.6;">
+            <li><strong>Stage 1 - Submission:</strong> Your application details and documents are entered into the government database.</li>
+            <li><strong>Stage 2 - Field Verification:</strong> The Village Administrative Officer (VAO) or Revenue Inspector (RI) verifies your local residential address and income.</li>
+            <li><strong>Stage 3 - Approval:</strong> The Tahsildar or Zonal Officer reviews the report and applies a digital signature.</li>
+            <li><strong>Stage 4 - Download:</strong> You can download the certificate online or collect a printed copy from the e-Seva centre.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand-title">FlowCODE</div>
+          <p class="footer-desc">
+            A voice-based accessible government service portal designed to simplify official documentation procedures for rural citizens and learners through plain Tamil and English.
+          </p>
+          <div class="footer-college">
+            FlowCODE Citizen Service Portal<br>
+            Public Digital Services &amp; e-Governance Initiative &bull; Tamil Nadu
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer-heading" data-i18n="quickLinks">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="index.html" data-i18n="navHome">Home</a></li>
+            <li><a href="services.html" data-i18n="navServices">Services Directory</a></li>
+            <li><a href="application-status.html" data-i18n="navStatus">Application Status</a></li>
+            <li><a href="contact.html" data-i18n="navContact">Department & Contact</a></li>
+            <li><a href="login.html" data-i18n="navLogin">Login</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Key Official Sources</h4>
+          <ul class="footer-links">
+            <li><a href="https://uidai.gov.in" target="_blank" rel="noopener noreferrer">UIDAI (Aadhaar)</a></li>
+            <li><a href="https://voters.eci.gov.in" target="_blank" rel="noopener noreferrer">ECI (Voter Services)</a></li>
+            <li><a href="https://parivahan.gov.in" target="_blank" rel="noopener noreferrer">Parivahan (Driving & RC)</a></li>
+            <li><a href="https://scholarships.gov.in" target="_blank" rel="noopener noreferrer">National Scholarship Portal</a></li>
+            <li><a href="https://pgportal.gov.in" target="_blank" rel="noopener noreferrer">CPGRAMS (Grievances)</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-disclaimers">
+        <span class="disclaimer-badge" data-i18n="footerDisclaimer">Demo prototype — not an official government service.</span>
+        <p class="disclaimer-text" data-i18n="footerWarning">
+          Government information may change. Please verify the latest details on the official government website before applying.
+        </p>
+        <p class="footer-copy">
+          &copy; 2026 FlowCODE Project | Citizen Service &amp; Public Digital Initiative. All rights reserved.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

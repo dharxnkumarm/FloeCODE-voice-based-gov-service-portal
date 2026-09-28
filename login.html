@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citizen Portal Login & Access - FlowCODE | Citizen e-Services</title>
+  <meta name="description" content="Secure citizen portal login and registration with full access using Username, Gmail, Date of Birth (D.O.B), and password.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Institutional Bar -->
+  <aside class="institution-strip" aria-label="Portal Header Information">
+    <div class="container">
+      <div class="institution-name" data-i18n="institution">Voice-Based Government Service Initiative</div>
+      <div>
+        <span class="academic-badge" data-i18n="department">Public Digital Services &amp; e-Governance</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Site Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand-block">
+        <a href="index.html" class="brand-title">
+          FlowCODE <span class="brand-badge" aria-hidden="true">&#9679;</span>
+        </a>
+        <span class="brand-subtitle" data-i18n="portalSubtitle">Voice-based government service portal</span>
+      </div>
+
+      <nav class="main-nav" aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li><a href="index.html" data-i18n="navHome">Home</a></li>
+          <li><a href="services.html" data-i18n="navServices">Services</a></li>
+          <li><a href="application-status.html" data-i18n="navStatus">Application Status</a></li>
+          <li><a href="contact.html" data-i18n="navContact">Contact</a></li>
+          <li id="navAuthItem">
+            <a href="login.html" id="navLoginLink" class="nav-login-btn active" data-i18n="navLogin">Login</a>
+          </li>
+        </ul>
+
+        <!-- Language Selector -->
+        <div class="lang-toggle-wrapper" role="group" aria-label="Language Selector">
+          <button type="button" id="langEnBtn" class="lang-btn active" onclick="setLanguage('en')">EN</button>
+          <button type="button" id="langTaBtn" class="lang-btn" onclick="setLanguage('ta')">தமிழ்</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="login-section" style="padding: 40px 0 60px 0;">
+    <div class="container">
+
+      <!-- Login & Registration Card (Visible when logged out) -->
+      <div id="loginFormCard" class="login-container-card">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <span class="hero-tag">&#128272; Secure Citizen Access Portal</span>
+          <h1 style="font-size: 26px; color: var(--color-deep-navy); margin-top: 10px; font-weight: 800;">Citizen Portal Access</h1>
+          <p style="font-size: 14px; color: var(--color-text-muted); margin-top: 6px;">
+            Sign in or register with your Citizen Username, Gmail account, Date of Birth (D.O.B), and password for full portal access.
+          </p>
+        </div>
+
+        <!-- Role / View Tabs: Sign In vs Register -->
+        <div class="login-tabs-bar" role="tablist">
+          <button type="button" id="tabSignInBtn" class="login-tab-btn active" role="tab" aria-selected="true" onclick="switchLoginTab('signin')">
+            &#128100; Citizen Sign In
+          </button>
+          <button type="button" id="tabRegisterBtn" class="login-tab-btn" role="tab" aria-selected="false" onclick="switchLoginTab('register')">
+            &#128221; New Citizen Registration
+          </button>
+        </div>
+
+        <!-- Notification / Error / Success Message -->
+        <div id="loginStatusAlert" class="login-status-alert"></div>
+
+        <!-- 1. CITIZEN SIGN IN FORM -->
+        <form id="citizenSignInForm" onsubmit="handleCitizenSignIn(event)">
+          <div class="status-form-group">
+            <label for="loginUsername" class="status-label-text">
+              Citizen Username / Full Name <span style="color:var(--color-error); font-weight:700;">*</span>:
+            </label>
+            <input type="text" id="loginUsername" class="status-input" placeholder="e.g., Ajay Kumar or tharun_m" required autocomplete="username">
+          </div>
+
+          <div class="status-form-group">
+            <label for="loginEmail" class="status-label-text">
+              Gmail / Email Account <span style="color:var(--color-error); font-weight:700;">*</span>:
+            </label>
+            <input type="email" id="loginEmail" class="status-input" placeholder="e.g., citizen.user@gmail.com" required autocomplete="email">
+          </div>
+
+          <div class="status-form-group">
+            <label for="loginDob" class="status-label-text">
+              Date of Birth (D.O.B) <span style="color:var(--color-error); font-weight:700;">*</span>:
+            </label>
+            <input type="date" id="loginDob" class="status-input" required>
+            <span style="font-size: 12px; color: var(--color-text-muted); display:block; margin-top:4px;">
+              Used for identity verification on government e-District portals.
+            </span>
+          </div>
+
+          <div class="status-form-group">
+            <label for="loginPassword" class="status-label-text">
+              Portal Password <span style="color:var(--color-error); font-weight:700;">*</span>:
+            </label>
+            <div class="password-field-wrap">
+              <input type="password" id="loginPassword" class="status-input" placeholder="Enter your password" required autocomplete="current-password">
+              <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('loginPassword', this)" title="Show/Hide Password" aria-label="Toggle password visibility">
+                &#128065;
+              </button>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin: 12px 0 20px 0; font-size: 13px;">
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--color-text-main);">
+              <input type="checkbox" id="rememberMe" checked> Remember my credentials
+            </label>
+            <a href="#reset" onclick="handleForgotPassword(event)" style="color: var(--color-royal-blue); font-weight: 600; text-decoration: none;">
+              Forgot Password?
+            </a>
+          </div>
+
+          <button type="submit" class="btn-primary" style="width: 100%; padding: 13px; font-size: 15px; font-weight: 700;">
+            &#128274; Sign In to Citizen Portal (Full Access)
+          </button>
+        </form>
+
+        <!-- 2. NEW CITIZEN REGISTRATION FORM -->
+        <form id="citizenRegisterForm" style="display: none;" onsubmit="handleCitizenRegistration(event)">
+          <div class="status-form-group">
+            <label for="regName" class="status-label-text">
+              Full Citizen Name <span style="color:var(--color-error); font-weight:700;">*</span>:
+            </label>
+            <input type="text" id="regName" class="status-input" placeholder="e.g., Thiru. M. Dharun Kumar" required>
+          </div>
+
+          <div class="status-form-group">
+            <label for="regEmail" class="status-label-text">
+              Gmail Address <span style="color:var(--color-error); font-weight:700;">*</span>:
+            </label>
+            <input type="email" id="regEmail" class="status-input" placeholder="e.g., dharun.citizen@gmail.com" required>
+            <span style="font-size: 12px; color: var(--color-text-muted); display:block; margin-top:4px;">
+              Digital certificates and application notifications will be linked to this Gmail.
+            </span>
+          </div>
+
+          <div class="status-form-group">
+            <label for="regDob" class="status-label-text">
+              Date of Birth (D.O.B) <span style="color:var(--color-error); font-weight:700;">*</span>:
+            </label>
+            <input type="date" id="regDob" class="status-input" required>
+          </div>
+
+          <div class="status-form-group">
+            <label for="regMobile" class="status-label-text">
+              Mobile Number (10 Digits) <span style="color:var(--color-error); font-weight:700;">*</span>:
+            </label>
+            <input type="tel" id="regMobile" class="status-input" placeholder="e.g., 9840123456" pattern="[0-9]{10}" maxlength="10" required>
+          </div>
+
+          <div class="status-form-group">
+            <label for="regVillage" class="status-label-text">
+              Village / Town &amp; District <span style="color:var(--color-error); font-weight:700;">*</span>:
+            </label>
+            <input type="text" id="regVillage" class="status-input" placeholder="e.g., Thiruporur, Chengalpattu" required>
+          </div>
+
+          <div class="status-form-group">
+            <label for="regPassword" class="status-label-text">
+              Create Password (Min 6 Characters) <span style="color:var(--color-error); font-weight:700;">*</span>:
+            </label>
+            <div class="password-field-wrap">
+              <input type="password" id="regPassword" class="status-input" placeholder="Enter strong password" minlength="6" required autocomplete="new-password">
+              <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('regPassword', this)" title="Show/Hide Password" aria-label="Toggle password visibility">
+                &#128065;
+              </button>
+            </div>
+          </div>
+
+          <div class="status-form-group">
+            <label for="regConfirmPassword" class="status-label-text">
+              Confirm Password <span style="color:var(--color-error); font-weight:700;">*</span>:
+            </label>
+            <div class="password-field-wrap">
+              <input type="password" id="regConfirmPassword" class="status-input" placeholder="Re-enter password" minlength="6" required autocomplete="new-password">
+              <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('regConfirmPassword', this)" title="Show/Hide Password" aria-label="Toggle password visibility">
+                &#128065;
+              </button>
+            </div>
+          </div>
+
+          <div style="margin: 14px 0 20px 0; font-size: 13px; color: var(--color-text-muted);">
+            <label style="display: flex; align-items: flex-start; gap: 8px; cursor: pointer;">
+              <input type="checkbox" id="regAgreement" required checked>
+              <span>I confirm that the citizen name, Gmail account, and Date of Birth provided are accurate for official e-District portal services.</span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn-primary" style="width: 100%; padding: 13px; font-size: 15px; font-weight: 700;">
+            &#10004; Create Citizen Account &amp; Get Full Access
+          </button>
+        </form>
+
+        <p class="status-notice" style="margin-top: 22px;">
+          &#128737; <strong>Security &amp; Privacy:</strong> All citizen records are stored locally in your browser session with end-to-end full access privileges for application filing, status tracking, and voice assistance.
+        </p>
+      </div>
+
+      <!-- User Dashboard View (Visible when logged in) -->
+      <div id="userDashboardCard" class="user-dashboard-area" style="display: none;">
+        
+        <!-- Header Profile Banner -->
+        <div class="dashboard-header-card">
+          <div>
+            <span id="dashUserRole" class="user-badge-role">&#128737; Verified Citizen Account (Full Access)</span>
+            <h1 id="dashUserName" class="dashboard-user-name">Citizen Name</h1>
+            <div id="dashUserMeta" class="dashboard-meta">
+              <span>&#128100; Citizen ID: <strong id="dashCitizenId">TN-CIT-82019</strong></span>
+              <span>&#9993; Gmail: <strong id="dashUserEmail">citizen@gmail.com</strong></span>
+              <span>&#128197; D.O.B: <strong id="dashUserDob">01/01/2000</strong> (<span id="dashUserAge">26</span> yrs)</span>
+              <span>&#128205; Village: <strong id="dashUserVillage">Thiruporur</strong></span>
+            </div>
+          </div>
+          <div>
+            <button type="button" class="btn-secondary" style="background:#FFFFFF; color:var(--color-error); border-color:var(--color-error); font-weight:700;" onclick="logoutUser()">
+              &#10006; Sign Out
+            </button>
+          </div>
+        </div>
+
+        <!-- Official Digital Citizen Pass / Identity Card -->
+        <div class="digital-id-card">
+          <div class="id-card-top">
+            <div class="id-card-title">&#127963; FlowCODE Citizen Digital Access Pass</div>
+            <div class="id-card-status">&#10004; ACTIVE &bull; FULL ACCESS</div>
+          </div>
+          <div class="id-card-body">
+            <div>
+              <div class="id-card-field-label">Citizen Name</div>
+              <div id="passName" class="id-card-field-val">Ajay Kumar</div>
+            </div>
+            <div>
+              <div class="id-card-field-label">Citizen ID Number</div>
+              <div id="passId" class="id-card-field-val" style="color:var(--color-royal-blue); font-family:monospace;">TN-CIT-82019</div>
+            </div>
+            <div>
+              <div class="id-card-field-label">Registered Gmail</div>
+              <div id="passEmail" class="id-card-field-val">citizen@gmail.com</div>
+            </div>
+            <div>
+              <div class="id-card-field-label">Date of Birth (D.O.B)</div>
+              <div id="passDob" class="id-card-field-val">2000-05-15</div>
+            </div>
+            <div>
+              <div class="id-card-field-label">Mobile Number</div>
+              <div id="passMobile" class="id-card-field-val">+91 98401 23456</div>
+            </div>
+            <div>
+              <div class="id-card-field-label">Jurisdiction &amp; State</div>
+              <div id="passLocation" class="id-card-field-val">Tamil Nadu, India</div>
+            </div>
+          </div>
+          <div class="id-card-actions">
+            <button type="button" class="btn-secondary" onclick="window.print()" style="font-size:13px; padding:7px 14px; background:#FFFFFF;">
+              &#128438; Print / Save Digital Pass
+            </button>
+            <button type="button" class="btn-secondary" onclick="copyCitizenId()" style="font-size:13px; padding:7px 14px; background:#FFFFFF;">
+              &#128203; Copy Citizen ID
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Apply for Government Service (Direct Full Access Feature) -->
+        <div class="dashboard-quick-apply-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+            <div>
+              <h2 style="font-size: 19px; color: var(--color-deep-navy); font-weight:800; margin:0;">
+                &#9997; Instant Online Service Application
+              </h2>
+              <p style="font-size: 13px; color: var(--color-text-muted); margin:4px 0 0 0;">
+                Submit a new service request directly with your authenticated citizen credentials.
+              </p>
+            </div>
+            <span class="user-badge-role" style="margin:0; background:var(--color-royal-blue);">Direct Submission</span>
+          </div>
+
+          <form id="dashboardApplyForm" onsubmit="handleDashboardQuickApply(event)" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:14px; align-items:end;">
+            <div>
+              <label for="applyServiceSelect" class="status-label-text">Select Government Service:</label>
+              <select id="applyServiceSelect" class="status-input" required>
+                <option value="Income Certificate">வருமான சான்றிதழ் (Income Certificate)</option>
+                <option value="Community Certificate">சாதிச் சான்றிதழ் (Community Certificate)</option>
+                <option value="Nativity Certificate">இருப்பிடச் சான்றிதழ் (Nativity Certificate)</option>
+                <option value="Ration Card (Smart Card)">புதிய குடும்ப அட்டை (Smart Ration Card)</option>
+                <option value="Aadhaar Address Update">ஆதார் முகவரி மாற்றம் (Aadhaar Update)</option>
+                <option value="Old Age Pension (OAP)">முதியோர் உதவித்தொகை (Old Age Pension)</option>
+                <option value="Kalaignar Magalir Urimai Thogai">கலைஞர் மகளிர் உரிமைத் திட்டம்</option>
+                <option value="Farmer PM-KISAN Benefit">விவசாயி உதவித்தொகை (PM-KISAN)</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="applyTalukInput" class="status-label-text">Taluk / Village Address:</label>
+              <input type="text" id="applyTalukInput" class="status-input" placeholder="e.g., Thiruporur Taluk" required>
+            </div>
+
+            <div>
+              <button type="submit" class="btn-primary" style="width:100%; padding:10px 14px; font-weight:700;">
+                &#128640; Submit Application Request
+              </button>
+            </div>
+          </form>
+
+          <div id="applySuccessNotice" style="display:none; margin-top:14px; padding:12px 14px; background-color:var(--color-success-bg); border:1px solid var(--color-success); color:var(--color-success); border-radius:var(--border-radius); font-size:14px;"></div>
+        </div>
+
+        <!-- Full Access Action Cards Grid -->
+        <div class="dashboard-grid">
+          <div class="dash-feature-card">
+            <div>
+              <div class="dash-feature-title">&#128266; Voice Assistant (Bilingual)</div>
+              <p class="dash-feature-text">
+                Your citizen account is authorized for hands-free voice search across all 27 services in Tamil and English.
+              </p>
+            </div>
+            <a href="index.html" class="btn-primary" style="text-align:center; font-size:13px; padding:8px 12px; text-decoration:none;">
+              Launch Voice Assistant &rarr;
+            </a>
+          </div>
+
+          <div class="dash-feature-card">
+            <div>
+              <div class="dash-feature-title">&#128218; 27 Services Directory</div>
+              <p class="dash-feature-text">
+                Explore complete eligibility criteria, step-by-step procedures, and official government department links.
+              </p>
+            </div>
+            <a href="services.html" class="btn-secondary" style="text-align:center; font-size:13px; padding:8px 12px; text-decoration:none;">
+              Browse All Services &rarr;
+            </a>
+          </div>
+
+          <div class="dash-feature-card">
+            <div>
+              <div class="dash-feature-title">&#128270; Track Application Status</div>
+              <p class="dash-feature-text">
+                Check live stage updates, officer remarks, and estimated delivery dates for your submitted requests.
+              </p>
+            </div>
+            <a href="application-status.html" class="btn-secondary" style="text-align:center; font-size:13px; padding:8px 12px; text-decoration:none;">
+              Open Status Tracker &rarr;
+            </a>
+          </div>
+
+          <div class="dash-feature-card">
+            <div>
+              <div class="dash-feature-title">&#128222; Official Citizen Helplines</div>
+              <p class="dash-feature-text">
+                Emergency 24x7 toll-free contact directory for CM Cell, e-District, Women &amp; Senior Citizen helplines.
+              </p>
+            </div>
+            <a href="contact.html" class="btn-secondary" style="text-align:center; font-size:13px; padding:8px 12px; text-decoration:none;">
+              View Helpline Numbers &rarr;
+            </a>
+          </div>
+        </div>
+
+        <!-- Custom Content Area (Tracked Applications list populated dynamically) -->
+        <div id="dashCustomContent"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand-title">FlowCODE</div>
+          <p class="footer-desc">
+            A voice-based accessible government service portal designed to simplify official documentation procedures for rural citizens and learners through plain Tamil and English.
+          </p>
+          <div class="footer-college">
+            FlowCODE Citizen Service Portal<br>
+            Public Digital Services &amp; e-Governance Initiative &bull; Tamil Nadu
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer-heading" data-i18n="quickLinks">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="index.html" data-i18n="navHome">Home</a></li>
+            <li><a href="services.html" data-i18n="navServices">Services Directory</a></li>
+            <li><a href="application-status.html" data-i18n="navStatus">Application Status</a></li>
+            <li><a href="contact.html" data-i18n="navContact">Department &amp; Contact</a></li>
+            <li><a href="login.html" data-i18n="navLogin">Login</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Key Official Sources</h4>
+          <ul class="footer-links">
+            <li><a href="https://uidai.gov.in" target="_blank" rel="noopener noreferrer">UIDAI (Aadhaar)</a></li>
+            <li><a href="https://voters.eci.gov.in" target="_blank" rel="noopener noreferrer">ECI (Voter Services)</a></li>
+            <li><a href="https://parivahan.gov.in" target="_blank" rel="noopener noreferrer">Parivahan (Driving &amp; RC)</a></li>
+            <li><a href="https://scholarships.gov.in" target="_blank" rel="noopener noreferrer">National Scholarship Portal</a></li>
+            <li><a href="https://pgportal.gov.in" target="_blank" rel="noopener noreferrer">CPGRAMS (Grievances)</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-disclaimers">
+        <span class="disclaimer-badge" data-i18n="footerDisclaimer">Demo prototype — not an official government service.</span>
+        <p class="disclaimer-text" data-i18n="footerWarning">
+          Government information may change. Please verify the latest details on the official government website before applying.
+        </p>
+        <p class="footer-copy">
+          &copy; 2026 FlowCODE Project | Citizen Service &amp; Public Digital Initiative. All rights reserved.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

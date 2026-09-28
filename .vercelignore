@@ -1,0 +1,6 @@
+# Local server and backup directories
+server.js
+flowcode/
+.git
+.gitignore
+*.log
